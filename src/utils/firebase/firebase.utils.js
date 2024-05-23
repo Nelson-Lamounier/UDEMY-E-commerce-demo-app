@@ -1,6 +1,6 @@
 import { initializeApp } from "firebase/app";
 
-import { getAuth, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth,signInWithRedirect, signInWithPopup, GoogleAuthProvider, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
 
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore'
 
@@ -25,7 +25,7 @@ googleProvider.setCustomParameters({
 
 export const auth = getAuth();
 export const signInWithGooglePopup = () => signInWithPopup(auth, googleProvider);
-export const signInWithGoogleRedirect = () => signInWithGoogleRedirect(auth, googleProvider)
+export const signInWithGoogleRedirect = () => signInWithRedirect(auth, googleProvider)
 
 // Create the database on firebase
 export const db = getFirestore();
@@ -50,6 +50,8 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInformation
   return userDocRef;
 };
 
+//Helper Functions
+
 // Async funtion because we will be storing data to firebase asyncronisly
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
   if(!email || !password) return;
@@ -62,3 +64,16 @@ export const signInAuthUserWithEmailAndPassword = async (email, password) => {
 
   return await signInWithEmailAndPassword(auth, email, password)
 }
+
+export const signOutUser = async () => await signOut(auth);
+
+
+// The below function will be invoke each time a user auth in(login) and when use auth out(logout)
+export const onAuthStateChangedListener = (callback) => onAuthStateChanged(auth, callback);
+
+// The above function represent the Observer Pattern concept as follows:
+/**
+ * next: callback,
+ * error: errorCallback
+ * Complete: completedCallback
+ */
