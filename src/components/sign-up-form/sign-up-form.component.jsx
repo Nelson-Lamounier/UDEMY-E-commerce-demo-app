@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import FormInput from "../form-input/form-input.component";
 import Button from "../button/button.component";
 
@@ -7,7 +8,9 @@ import {
   createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
 
-import './sign-up.style.scss'
+import { signUpStart } from "../../store/user/user.action";
+
+import { SignUpContainer} from "./sign-up.style.jsx";
 
 const defaultFormFields = {
   displayName: "",
@@ -21,6 +24,7 @@ const SignUpForm = () => {
   const [formFields, setFormFields] = useState(defaultFormFields);
   // Distructuring objects from input field
   const { displayName, email, password, confirmPassword } = formFields;
+  const dispatch = useDispatch();
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
@@ -34,11 +38,7 @@ const SignUpForm = () => {
       return;
     }
     try {
-      const { user } = await createAuthUserWithEmailAndPassword(
-        email,
-        password
-      );
-      await createUserDocumentFromAuth(user, { displayName });
+      dispatch(signUpStart(email, password, displayName));
       resetFormFields();
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {
@@ -57,7 +57,7 @@ const SignUpForm = () => {
   };
 
   return (
-    <div className="sign-up-container">
+    <SignUpContainer>
       <h2>Don't have an account?</h2>
       <span>Sign Up using Email and Password</span>
       <form onSubmit={handleSubmit}>
@@ -94,9 +94,9 @@ const SignUpForm = () => {
           value={confirmPassword}
         />
 
-        <Button type='submit'>Sign up</Button>
+        <Button type="submit">Sign up</Button>
       </form>
-    </div>
+      </SignUpContainer>
   );
 };
 
