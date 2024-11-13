@@ -1,9 +1,5 @@
-import { CART_ACTION_TYPE } from "./cart.type";
+import { createSlice } from "@reduxjs/toolkit";
 
-import { createAction } from "../../utils/reducer/reducer.utils";
-
-export const setIsCartOpen = (boolean) =>
-  createAction(CART_ACTION_TYPE.SET_IS_CART_OPEN, boolean);
 
 const addCartItem = (cartItems, productToAdd) => {
   // Find if cartItems contains productToAdd
@@ -46,21 +42,54 @@ const removeCartItem = (cartItems, cartItemToRemove) => {
 export const clearCartItem = (cartItems, cartItemToClear) =>
   cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
 
-export const addItemToCart = (cartItems, productToAdd) => {
-  const newCartItems = addCartItem(cartItems, productToAdd);
-  return createAction(CART_ACTION_TYPE.SET_CART_ITEMS, newCartItems);
+export const CART_INITIAL_STATE = {
+  isCartOpen: false,
+  cartItems: [],
 };
 
-export const removeItemFromCart = (cartItems, cartItemToRemove) => {
-  const newCartItems = removeCartItem(cartItems, cartItemToRemove);
-  return createAction(CART_ACTION_TYPE.SET_CART_ITEMS, newCartItems);
-};
+export const cartSlice = createSlice({
+  name: "cart",
+  initialState: CART_INITIAL_STATE,
+  reducers: {
+    setIsCartOpen(state, action) {
+      state.isCartOpen = action.payload;
+    },
+    addItemToCart(state, action) {
+      state.cartItems = addCartItem(state.cartItems, action.payload);
+    },
+    removeItemFromCart(state, action) {
+      state.cartItems = removeCartItem(state.cartItems, action.payload);
+    },
+    clearItemFromCart(state, action) {
+      state.cartItems = clearCartItem(state.cartItems, action.payload);
+    },
+  },
+});
 
-export const clearItemFromCart = (cartItems, cartItemToClear) => {
-  const newCartItems = clearCartItem(cartItems, cartItemToClear);
-  return createAction(CART_ACTION_TYPE.SET_CART_ITEMS, newCartItems);
-};
+export const {
+  setIsCartOpen,
+  addItemToCart,
+  removeItemFromCart,
+  clearItemFromCart,
+} = cartSlice.actions;
 
-// export const setIsCartOpen = (bool) => {
-//   dispatch(createAction(CART_ACTION_TYPE.SET_IS_CART_OPEN, bool));
+export const cartReducer = cartSlice.reducer;
+// export const cartReducer = (state = CART_INITIAL_STATE, action = {}) => {
+//   const { type, payload } = action;
+
+//   switch (type) {
+//     case CART_ACTION_TYPE.SET_CART_ITEMS:
+//       return {
+//         ...state,
+//         cartItems: payload,
+//       };
+//     case CART_ACTION_TYPE.SET_IS_CART_OPEN:
+//       return {
+//         ...state,
+//         isCartOpen: payload,
+//       };
+
+//     default:
+//       return state;
+//   }
 // };

@@ -6,18 +6,14 @@ import Navigation from "./routes/navigation/navigation.component";
 import Authentication from "./routes/authentication/authentication.component";
 import Shop from "./routes/shop/shop.component";
 import Checkout from "./routes/checkout/checkout.component";
-import {
-  onAuthStateChangedListener,
-  createUserDocumentFromAuth,
-  getCurrentUser,
-} from "./utils/firebase/firebase.utils";
-import { checkUserSession } from "./store/user/user.action";
+
+import { checkUserSession } from "./store/user/user.slice";
 
 const App = () => {
   const dispatch = useDispatch();
   //Is a React Hook that lets you synchronize a component with an external system
   useEffect(() => {
-    dispatch(checkUserSession())
+    dispatch(checkUserSession());
   }, [dispatch]);
 
   return (

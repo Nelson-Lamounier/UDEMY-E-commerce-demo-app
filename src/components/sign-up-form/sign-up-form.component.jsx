@@ -8,7 +8,7 @@ import {
   createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
 
-import { signUpStart } from "../../store/user/user.action";
+import { signUpStart } from "../../store/user/user.slice.js";
 
 import { SignUpContainer} from "./sign-up.style.jsx";
 
@@ -20,11 +20,11 @@ const defaultFormFields = {
 };
 
 const SignUpForm = () => {
+  const dispatch = useDispatch();
   // Tracking all the data inputted on the form with "useState"
   const [formFields, setFormFields] = useState(defaultFormFields);
   // Distructuring objects from input field
   const { displayName, email, password, confirmPassword } = formFields;
-  const dispatch = useDispatch();
 
   const resetFormFields = () => {
     setFormFields(defaultFormFields);
@@ -38,7 +38,7 @@ const SignUpForm = () => {
       return;
     }
     try {
-      dispatch(signUpStart(email, password, displayName));
+      dispatch(signUpStart({email, password, displayName}));
       resetFormFields();
     } catch (error) {
       if (error.code === "auth/email-already-in-use") {

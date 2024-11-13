@@ -4,37 +4,40 @@ import { selectCartItems, selectCartTotal} from '../../store/cart/cart.selector'
 
 import CheckoutItem from "../../components/checkout-item/checkout-item.component";
 
-import "./checkout.style.scss";
+import {    CheckoutContainer,
+  CheckoutHeader,
+  HeaderBlock,
+  Total,} from "./checkout.style.jsx";
 
 const Checkout = () => {
 const cartItems = useSelector(selectCartItems)
 const cartTotal = useSelector(selectCartTotal)
 
   return (
-    <div className="checkout-container">
-      <div className="checkout-header">
-        <div className="header-block">
+    <CheckoutContainer>
+      <CheckoutHeader>
+        <HeaderBlock>
           <span>Product</span>
-        </div>
-        <div className="header-block">
+        </HeaderBlock>
+        <HeaderBlock>
           <span>Description</span>
-        </div>
-        <div className="header-block">
+        </HeaderBlock>
+        <HeaderBlock>
           <span>Quantity</span>
-        </div>
-        <div className="header-block">
+        </HeaderBlock>
+        <HeaderBlock>
           <span>Price</span>
-        </div>
-        <div className="header-block">
+        </HeaderBlock>
+        <HeaderBlock>
           <span>Remove</span>
-        </div>
-      </div>
+        </HeaderBlock>
+      </CheckoutHeader>
 
       {cartItems.map((cartItem) => (
         <CheckoutItem key={cartItem.id} cartItem={cartItem} />
       ))}
-      <div className="total">TOTAL: ${cartTotal} 0</div>
-    </div>
+      <Total>€{cartTotal.toFixed(2)}</Total>
+    </CheckoutContainer>
   );
 };
 

@@ -4,12 +4,12 @@ import { useDispatch } from "react-redux";
 import FormInput from "../form-input/form-input.component";
 import Button, { BUTTON_TYPE_CLASSES } from "../button/button.component";
 
-import{SignInContainer, ButtonsContainer } from "./sign-in-form.style.jsx";
+import { SignInContainer, ButtonsContainer } from "./sign-in-form.style.jsx";
 
 import {
   googleSignInStart,
   emailSignInStart,
-} from "../../store/user/user.action";
+} from "../../store/user/user.slice.js";
 
 const defaultFormFields = {
   email: "",
@@ -33,7 +33,7 @@ const SignInForm = () => {
     event.preventDefault();
 
     try {
-      dispatch(emailSignInStart(email, password));
+      dispatch(emailSignInStart({email, password}));
       resetFormFields();
     } catch (error) {
       switch (error.code) {
@@ -48,6 +48,7 @@ const SignInForm = () => {
       }
     }
   };
+
   const handleChange = (event) => {
     const { name, value } = event.target;
 
@@ -83,7 +84,7 @@ const SignInForm = () => {
             onClick={signInWithGoogle}
           >
             Google sign in
-          </Button >
+          </Button>
         </ButtonsContainer>
       </form>
     </SignInContainer>
