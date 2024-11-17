@@ -8,7 +8,7 @@ import {
   createUserDocumentFromAuth,
 } from "../../utils/firebase/firebase.utils";
 
-import { signUpStart } from "../../store/user/user.slice.js";
+import { signUpStart } from "../../store/user/user.slice";
 
 import { SignUpContainer} from "./sign-up.style.jsx";
 

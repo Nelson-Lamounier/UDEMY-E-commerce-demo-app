@@ -1,6 +1,6 @@
-import { persistStore, persistReducer } from "redux-persist";
+import { persistStore, persistReducer, PersistConfig } from "redux-persist";
 import storage from "redux-persist/lib/storage";
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, Middleware } from "@reduxjs/toolkit";
 import logger from "redux-logger";
 import createSagaMiddleware from "redux-saga";
 
@@ -9,7 +9,17 @@ import { rootSaga } from "./root-saga";
 
 const sagaMiddleware = createSagaMiddleware();
 
-const persistConfig = {
+// Define the shape of the persisted state
+interface PersistedStore {
+  cart: any; // Replace `any` with the type of your `cart` state if known
+}
+
+// Configure persist settings with type safety
+type ExtendedPersistConfig = PersistConfig<ReturnType<typeof rootReducer>> & {
+  whitelist: (keyof PersistedStore)[];
+}
+
+const persistConfig: ExtendedPersistConfig = {
   key: "root",
   storage,
   whitelist: ["cart"],
@@ -19,10 +29,10 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 // Configure middleware
-const middleWares = [
+const middleWares: Middleware[] = [
   process.env.NODE_ENV === "development" && logger,
   sagaMiddleware,
-].filter(Boolean);
+].filter(Boolean) as Middleware[];
 
 // Create the store using configureStore
 export const store = configureStore({
@@ -31,7 +41,7 @@ export const store = configureStore({
     getDefaultMiddleware({
       serializableCheck: {
         // Ignore redux-persist actions for serializable checks
-        ignoreActions: ["persist/PERSIST", "persist/REHYDRATE"],
+        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
       },
     }).concat(middleWares),
     devTools: process.env.NODE_ENV !== 'production', // Enable Redux DevTools only in development
@@ -40,3 +50,7 @@ export const store = configureStore({
 sagaMiddleware.run(rootSaga);
 
 export const persistor = persistStore(store);
+
+// Infer the 'RootState' and 'AppDispatch' types from the store itself
+export type RootState = ReturnType<typeof store.getState>
+export type AppDispatch = typeof store.dispatch

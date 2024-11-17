@@ -9,7 +9,7 @@ import { SignInContainer, ButtonsContainer } from "./sign-in-form.style.jsx";
 import {
   googleSignInStart,
   emailSignInStart,
-} from "../../store/user/user.slice.js";
+} from "../../store/user/user.slice";
 
 const defaultFormFields = {
   email: "",
