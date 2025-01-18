@@ -1,13 +1,20 @@
 import { createSlice, PayloadAction, Action } from "@reduxjs/toolkit";
 import { isActionOf } from "../../utils/matchers/action.matchers.utils";
+import { CategoryItem } from "../categories/category.slice";
 
 // Define the structure of a single cart item
-export interface CartItem {
-  id: number;
-  name: string;
-  price: number;
+// export interface CartItem {
+//   id: number;
+//   name: string;
+//   price: number;
+//   imageUrl: string
+//   quantity: number;
+// }
+
+// Define the structure of a product to add
+export type CartItem = CategoryItem & {
   quantity: number;
-}
+};
 
 // Define the initial state structure
 export interface CartState {
@@ -23,7 +30,7 @@ export const CART_INITIAL_STATE: CartState = {
 // Utility function to add an item to the cart
 const addCartItem = (
   cartItems: CartItem[],
-  productToAdd: CartItem
+  productToAdd: CategoryItem
 ): CartItem[] => {
   // Find if cartItems contains productToAdd
   const existingCartItem = cartItems.find(
@@ -71,7 +78,6 @@ export const clearCartItem = (
 ): CartItem[] =>
   cartItems.filter((cartItem) => cartItem.id !== cartItemToClear.id);
 
-
 // Define the slice
 export const cartSlice = createSlice({
   name: "cart",
@@ -80,7 +86,7 @@ export const cartSlice = createSlice({
     setIsCartOpen(state, action: PayloadAction<boolean>) {
       state.isCartOpen = action.payload;
     },
-    addItemToCart(state, action: PayloadAction<CartItem>) {
+    addItemToCart(state, action: PayloadAction<CategoryItem>) {
       state.cartItems = addCartItem(state.cartItems, action.payload);
     },
     removeItemFromCart(state, action: PayloadAction<CartItem>) {
@@ -94,12 +100,6 @@ export const cartSlice = createSlice({
     builder
       .addMatcher(isActionOf(setIsCartOpen), (state, action) => {
         state.isCartOpen = action.payload;
-      })
-      .addMatcher(isActionOf(addItemToCart), (state, action) => {
-        state.cartItems = addCartItem(state.cartItems, action.payload);
-      })
-      .addMatcher(isActionOf(removeItemFromCart), (state, action) => {
-        state.cartItems = removeCartItem(state.cartItems, action.payload);
       })
       .addMatcher(isActionOf(clearItemFromCart), (state, action) => {
         state.cartItems = clearCartItem(state.cartItems, action.payload);

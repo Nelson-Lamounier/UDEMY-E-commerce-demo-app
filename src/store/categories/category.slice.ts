@@ -7,6 +7,7 @@ export interface CategoryItem {
   imageUrl: string;
   name: string;
   price: number;
+
 }
 
 export interface Category {
@@ -21,12 +22,12 @@ export type CategoryMap = {
 
 // Define the shape of the state
 export interface CategoryState {
-  categories: Category[];
-  isLoading: boolean;
-  error: string | null;
+  readonly categories: Category[];
+  readonly isLoading: boolean;
+  readonly error: string | null;
 }
 
-// Inital state with the defined type
+ 
 export const CATEGORIES_INITIAL_STATE: CategoryState = {
   categories: [],
   isLoading: false,
@@ -58,33 +59,26 @@ export const categoriesSlice = createSlice({
       state.error = null;
     },
     // Action to handle failed fetch
-    fetchCategoriesFailed(state, action: PayloadAction<string>) {
+    fetchCategoriesFailed(state, action: PayloadAction<Error>) {
       state.isLoading = false;
-      state.error = action.payload;
+      state.error = action.payload.message;
     },
   },
   extraReducers: (builder) => {
     // Dynamic matching for actions
-    builder.addMatcher(
-        isActionOf(fetchCategoriesStart), (state) => {
-          state.isLoading = true;
-          state.error = null;
-        }
-    )
-    .addMatcher(
-        isActionOf(fetchCategoriesSuccess), (state, action) => {
-          state.categories = action.payload;
-          state.isLoading = false;
-          state.error = null;
-        }
-    )
-    .addMatcher(
-        isActionOf(fetchCategoriesFailed), (state, action) => {
-          state.isLoading = false;
-          state.error = action.payload
-        }
-    )
-    
+    builder
+      .addMatcher(isActionOf(fetchCategoriesStart), (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addMatcher(isActionOf(fetchCategoriesSuccess), (state, action) => {
+        state.categories = action.payload;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addMatcher(isActionOf(fetchCategoriesFailed), (state, action) => {
+        state.isLoading = false;
+      });
   },
   // extraReducers: (builder) => {
   //   // Dynamic matching for actions
@@ -110,7 +104,7 @@ export const categoriesSlice = createSlice({
   //         state.error = action.payload
   //       }
   //   )
-    
+
   // },
 });
 
@@ -120,8 +114,6 @@ export const {
   fetchCategoriesSuccess,
   fetchCategoriesFailed,
 } = categoriesSlice.actions;
-
-
 
 export const categoriesReducer = categoriesSlice.reducer;
 

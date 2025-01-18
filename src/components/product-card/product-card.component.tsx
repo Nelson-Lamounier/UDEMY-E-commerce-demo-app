@@ -1,6 +1,10 @@
-import { useDispatch } from 'react-redux';
+import { FC } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
+
+import { selectCartItems } from '../../store/cart/cart.selector';
 import { addItemToCart } from '../../store/cart/cart.slice';
+import {CategoryItem} from '../../store/categories/category.slice'
 
 
 import Button, {BUTTON_TYPE_CLASSES} from '../button/button.component';
@@ -10,14 +14,19 @@ import {
   Footer,
   Name,
   Price,
-} from './product-card.style.jsx';
+} from './product-card.style';
 
-const ProductCard = ( { product } ) => {
+type  ProductCardProps = {
+  product: CategoryItem
+}
+
+const ProductCard: FC<ProductCardProps> = ( { product } ) => {
   const { name, price, imageUrl } = product;
   const dispatch = useDispatch();
 
 
-  const addProductToCart = () => dispatch(addItemToCart(product))
+
+  const addProductToCart = () => dispatch(addItemToCart(product));
 
   // {`€${price.toFixed(2)}`}
   return (

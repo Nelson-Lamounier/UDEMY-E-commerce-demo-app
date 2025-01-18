@@ -4,12 +4,12 @@ import { selectCartItems, selectCartTotal} from '../../store/cart/cart.selector'
 
 import CheckoutItem from "../../components/checkout-item/checkout-item.component";
 
-import PaymentForm from '../../components/payment-form/payment-form.component.jsx';
+import PaymentForm from '../../components/payment-form/payment-form.component';
 
 import {    CheckoutContainer,
   CheckoutHeader,
   HeaderBlock,
-  Total,} from "./checkout.style.jsx";
+  Total,} from "./checkout.style";
 
 const Checkout = () => {
 const cartItems = useSelector(selectCartItems)
